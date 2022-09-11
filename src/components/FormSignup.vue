@@ -5,14 +5,15 @@
     </h2>
 
     <div class="text-white text-lg mb-10">
-      <label class="block mb-5" for="name">
+      <div class="block mb-5">
         <div class="text-md mb-1 text-primary">Name</div>
-        <input
-          v-model="name"
-          type="text"
-          name="name"
-          placeholder="Adam Smith"
-          class="
+        <label for="name">
+          <input
+            v-model="form.name.value"
+            type="text"
+            name="name"
+            placeholder="Adam Smith"
+            class="
               outline-none
               bg-transparent
               border-content
@@ -21,17 +22,20 @@
               p-2.5
               w-full
             "
-        />
-      </label>
+          />
+        </label>
+        <p class="text-secondary text-sm mt-2">{{ form.name.error }}</p>
+      </div>
 
-      <label class="block mb-5" for="email">
+      <div class="block mb-5">
         <div class="text-md mb-1 text-primary">Email</div>
-        <input
-          v-model="email"
-          type="email"
-          name="email"
-          placeholder="email@gmail.com"
-          class="
+        <label for="email">
+          <input
+            v-model="form.email.value"
+            type="email"
+            name="email"
+            placeholder="email@gmail.com"
+            class="
               outline-none
               bg-transparent
               border-content
@@ -40,16 +44,19 @@
               p-2.5
               w-full
             "
-        />
-      </label>
+          />
+        </label>
+        <p class="text-secondary text-sm mt-2">{{ form.email.error }}</p>
+      </div>
 
-      <label class="block mb-5" for="birthday">
+      <div class="block mb-5">
         <div class="text-md mb-1 text-primary">Birthday</div>
-        <input
-          v-model="birthday"
-          type="date"
-          name="birthday"
-          class="
+        <label for="birthday">
+          <input
+            v-model="form.birthday.value"
+            type="date"
+            name="birthday"
+            class="
               outline-none
               bg-transparent
               border-content
@@ -58,17 +65,19 @@
               p-2.5
               w-full
             "
-        />
-      </label>
+          />
+        </label>
+      </div>
 
-      <label for="color">
+      <div class="block mb-5">
         <div class="text-md mb-1 text-primary">Favorite Color</div>
-        <input
-          v-model="color"
-          type="text"
-          name="color"
-          placeholder="Blue"
-          class="
+        <label for="color">
+          <input
+            v-model="form.color.value"
+            type="text"
+            name="color"
+            placeholder="Blue"
+            class="
               outline-none
               bg-transparent
               border-content
@@ -77,8 +86,11 @@
               p-2.5
               w-full
             "
-        />
-      </label>
+          />
+        </label>
+        <p class="text-secondary text-sm mt-2">{{ form.color.error }}</p>
+      </div>
+
     </div>
     <button
       type="submit"
@@ -89,18 +101,63 @@
 
 <script>
 import { Vue } from 'vue-class-component';
+import regex from '@/constants/regex';
 
 export default class FormSignup extends Vue {
-  name = ''
-
-  email = ''
-
-  birthday = ''
-
-  color = ''
+  form = {
+    name: { value: '', error: '' },
+    email: { value: '', error: '' },
+    birthday: { value: '', error: '' },
+    color: { value: '', error: '' },
+  }
 
   handleSubmit = (event) => {
     event.preventDefault();
+    this.validateForm();
+
+    const {
+      name, email, birthday, color,
+    } = this.form;
+    const formHasError = name.error || email.error || birthday.error || color.error;
+
+    if (!formHasError) {
+      // TODO: API Call.
+    } else {
+      // TODO: validate
+    }
+  }
+
+  validateForm = () => {
+    this.validateColor();
+    this.validateEmail();
+    this.validateName();
+  }
+
+  validateName = () => {
+    const name = this.form.name.value;
+    if (regex.name.test(name)) {
+      this.form.name.error = '';
+    } else {
+      this.form.name.error = 'Please enter a valid name';
+    }
+  }
+
+  validateEmail = () => {
+    const email = this.form.email.value;
+    if (regex.email.test(email)) {
+      this.form.email.error = '';
+    } else {
+      this.form.email.error = 'Enter a valid email';
+    }
+  }
+
+  validateColor = () => {
+    const color = this.form.color.value;
+    if (regex.color.test(color) && color) {
+      this.form.color.error = '';
+    } else {
+      this.form.color.error = 'Please enter a valid color name';
+    }
   }
 }
 </script>
